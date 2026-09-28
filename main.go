@@ -101,6 +101,9 @@ func main() {
 		return
 	}
 
+	// Optional interactive launch-mode picker (-i / --interactive); see interactive.go.
+	launchArgs := interactiveArgs(cfg, os.Args[1:])
+
 	// Loop for authentication and launching so we can retry on failure.
 	for {
 		// 2. Authenticate with Epic Games to get launch credentials.
@@ -146,7 +149,7 @@ func main() {
 		log.Println("Successfully authenticated. Launching Rocket League...")
 		// os.Args[0] is the program name, os.Args[1:] is all subsequent arguments.
 		// Updated to pass the full cfg object
-		if err := launchGame(cfg, creds, os.Args[1:]); err != nil {
+		if err := launchGame(cfg, creds, launchArgs); err != nil {
 			detailedMsg := "Failed to Launch Rocket League.\n\n" +
 				"Please ensure the Rocket League path is correctly set in 'config.json' and that the game executable is not missing or corrupted.\n\n" +
 				"Details: " + err.Error()
