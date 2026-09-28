@@ -1,0 +1,32 @@
+name: Build Windows EXE
+
+# Manual build: produces Slipstream.exe and uploads it as a workflow artifact.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build Slipstream.exe
+    runs-on: ubuntu-latest # Cross-compile, same as release.yml
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+
+      - name: Build for Windows
+        run: GOOS=windows GOARCH=amd64 go build -o Slipstream.exe .
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Slipstream-windows-amd64
+          path: Slipstream.exe
+          if-no-files-found: error
